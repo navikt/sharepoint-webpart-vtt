@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "word-to-vtt-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/wordToVtt/WordToVttWebPart.js",
+          "manifest": "./src/webparts/wordToVtt/WordToVttWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "WordToVttWebPartStrings": "lib/webparts/wordToVtt/loc/{locale}.js"
+  }
+}
