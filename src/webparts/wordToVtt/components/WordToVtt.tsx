@@ -4,6 +4,13 @@ import { IWordToVttProps } from './IWordToVttProps';
 import { chunk, findIndex } from '@microsoft/sp-lodash-subset';
 import { TextField, Slider, DefaultButton } from '@fluentui/react';
 
+export interface Sub {
+  startTime: moment.Moment;
+  endTime: moment.Moment;
+  speaker: String;
+  text: String;
+}
+
 export default class WordToVtt extends React.Component<IWordToVttProps, {text: string, speed: number}> {
 
   public constructor(props: IWordToVttProps) {
@@ -40,26 +47,35 @@ export default class WordToVtt extends React.Component<IWordToVttProps, {text: s
       />
     </>);
   }
-
   public generateVTT = () => {
     const {text, speed} = this.state;
+    const findSubPattern = /^(\d\d\:\d\d\:\d\d)\s?(.*)$/;
+    const wordTimeFormat = "HH:mm:ss";
+    const vttTimeFormat = "HH:mm:ss.SSS";
     try {
-      const lines: string[] = text.split(/\r?\n/).filter(v=>v.trim()!=="");
-      lines.splice(0, findIndex(lines, l => l.match(/^\d\d\:\d\d\:\d\d.*$/) !== null));
-      const subtitles = chunk(lines, 2).map((val, index) => {
-        let [, startTimeString, speaker] = val[0].match(/^(\d\d\:\d\d\:\d\d)\s?(.*)$/) || [];
-        const sub = val[1].trim();
-        const startTime = moment(startTimeString, "HH:mm:ss");
-        if (startTime.isValid()) return {
-          startTime: startTime.format("HH:mm:ss.SSS"),
-          endTime: startTime.add(Math.max(2.5, sub.length/speed),'seconds').format("HH:mm:ss.SSS"),
-          speaker: speaker && speaker.trim(),
-          sub,
-        };
-        else throw new Error(`Klarte ikke å lese tidskode (linje ${index+1})`);
-      });
-      return `WEBVTT\n\n${subtitles.map(v=>
-        `${v.startTime} --> ${v.endTime}\n${v.speaker && `<v ${v.speaker}>`}${v.sub}`
+      // construct array and remove empty lines
+      const lines: string[] = text.split(/\r?\n/).filter(v => v.trim() !== "");
+      let subs: Sub[] = [];
+      // find first timecode
+      lines.splice(0, findIndex(lines, l => l.match(findSubPattern) !== null));
+      while (lines.length) {
+        // extract timecode and speaker
+        const [, startTimeString, speaker] = lines.shift().match(findSubPattern) || [];
+        // extract subText, making sure we get the last sub as well
+        const subText  = findIndex(lines, l => l.match(findSubPattern) !== null) !== -1
+          ? lines.splice(0,findIndex(lines, l => l.match(findSubPattern) !== null)).join("\n")
+          : lines.splice(0).join("\n"); // last sub
+        const startTime = moment(startTimeString, wordTimeFormat);
+        // check if start time and subText is valid and push sub to subs array
+        if (startTime.isValid() && subText) subs.push({
+            startTime: startTime,
+            endTime: startTime.clone().add(Math.max(2.5, subText.length/speed),'seconds'),
+            speaker: speaker && speaker.trim(),
+            text: subText.trim(),
+        });
+      }
+      return `WEBVTT\n\n${subs.map(v=>
+        `${v.startTime.format(vttTimeFormat)} --> ${v.endTime.format(vttTimeFormat)}\n${v.speaker && `<v ${v.speaker}>`}${v.text}${v.speaker && `</v>`}`
       ).join("\n\n")}`;
     } catch (e) {
       console.log(e);
