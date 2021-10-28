@@ -13,6 +13,10 @@ export interface Sub {
 
 export default class WordToVtt extends React.Component<IWordToVttProps, {text: string, speed: number}> {
 
+  public findSubPattern = /^(\d\d\:\d\d\:\d\d)\s?(.*)$/;
+  public wordTimeFormat = "HH:mm:ss";
+  public vttTimeFormat  = "HH:mm:ss.SSS";
+
   public constructor(props: IWordToVttProps) {
     super(props);
     this.state = {text: '', speed: 12.5};
@@ -47,25 +51,23 @@ export default class WordToVtt extends React.Component<IWordToVttProps, {text: s
       />
     </>);
   }
+
   public generateVTT = () => {
     const {text, speed} = this.state;
-    const findSubPattern = /^(\d\d\:\d\d\:\d\d)\s?(.*)$/;
-    const wordTimeFormat = "HH:mm:ss";
-    const vttTimeFormat = "HH:mm:ss.SSS";
     try {
       // construct array and remove empty lines
       const lines: string[] = text.split(/\r?\n/).filter(v => v.trim() !== "");
       let subs: Sub[] = [];
       // find first timecode
-      lines.splice(0, findIndex(lines, l => l.match(findSubPattern) !== null));
+      lines.splice(0, this.findIndexOfNextSub(lines));
       while (lines.length) {
         // extract timecode and speaker
-        const [, startTimeString, speaker] = lines.shift().match(findSubPattern) || [];
+        const [, startTimeString, speaker] = lines.shift().match(this.findSubPattern) || [];
         // extract subText, making sure we get the last sub as well
-        const subText  = findIndex(lines, l => l.match(findSubPattern) !== null) !== -1
-          ? lines.splice(0,findIndex(lines, l => l.match(findSubPattern) !== null)).join("\n")
+        const subText  = this.findIndexOfNextSub(lines) !== -1
+          ? lines.splice(0, this.findIndexOfNextSub(lines)).join("\n")
           : lines.splice(0).join("\n"); // last sub
-        const startTime = moment(startTimeString, wordTimeFormat);
+        const startTime = moment(startTimeString, this.wordTimeFormat);
         // check if start time and subText is valid and push sub to subs array
         if (startTime.isValid() && subText) subs.push({
             startTime: startTime,
@@ -75,11 +77,15 @@ export default class WordToVtt extends React.Component<IWordToVttProps, {text: s
         });
       }
       return `WEBVTT\n\n${subs.map(v=>
-        `${v.startTime.format(vttTimeFormat)} --> ${v.endTime.format(vttTimeFormat)}\n${v.speaker && `<v ${v.speaker}>`}${v.text}${v.speaker && `</v>`}`
+        `${v.startTime.format(this.vttTimeFormat)} --> ${v.endTime.format(this.vttTimeFormat)}\n${v.speaker && `<v ${v.speaker}>`}${v.text}${v.speaker && `</v>`}`
       ).join("\n\n")}`;
     } catch (e) {
       console.log(e);
       return `Klarte ikke å lage VTT. Har du husket å ta med tidskodene fra transkriberingen?\n\n${e}`;
     }
+  }
+
+  public findIndexOfNextSub(lines: string[]): number {
+    return findIndex(lines, l => l.match(this.findSubPattern) !== null);
   }
 }
