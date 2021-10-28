@@ -17,7 +17,7 @@ export default class WordToVtt extends React.Component<IWordToVttProps, {text: s
       <TextField 
         label="Lim inn tekst fra Word-transkribering her"
         multiline rows={5}
-        onChange={(_, val)=>this.setState({ 'text': val })}
+        onChange={(_, v)=>this.setState({'text': v})}
       />
       <br />
       <Slider 
@@ -35,7 +35,7 @@ export default class WordToVtt extends React.Component<IWordToVttProps, {text: s
       <br />
       <DefaultButton
         text="Last ned fil (subs.vtt)"
-        href={`data:text/plain;charset=UTF-8,${encodeURIComponent(vtt)}`}
+        href={`data:text/vtt;charset=UTF-8,${encodeURIComponent(vtt)}`}
         download="subs.vtt"
       />
     </>);
