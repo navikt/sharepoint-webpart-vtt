@@ -76,6 +76,12 @@ export default class WordToVtt extends React.Component<IWordToVttProps, {text: s
             text: subText.trim(),
         });
       }
+      // prevent sub overlap
+      subs = subs.map((sub, i, arr) => {
+        if (arr[i+1] && sub.endTime.isAfter(arr[i+1].startTime)) sub.endTime = arr[i+1].startTime;
+        return sub;
+      });
+      // output WEBVTT
       return `WEBVTT\n\n${subs.map(v=>
         `${v.startTime.format(this.vttTimeFormat)} --> ${v.endTime.format(this.vttTimeFormat)}\n${v.speaker && `<v ${v.speaker}>`}${v.text}${v.speaker && `</v>`}`
       ).join("\n\n")}`;
