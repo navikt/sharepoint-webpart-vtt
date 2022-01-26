@@ -3,7 +3,7 @@
   "solution": {
     "name": "word-to-vtt-client-side-solution",
     "id": "f6cb6ed8-b477-4007-9f25-b79546f872e9",
-    "version": "1.0.0.0",
+    "version": "1.0.0.1",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "developer": {
