@@ -3,6 +3,7 @@
 ## Summary
 
 Adds web part that can transform transcripts from Word Online to WEBVTT (subtitles for movies).
+
 ## Used SharePoint Framework Version
 
 ![version](https://img.shields.io/badge/version-1.13-green.svg)
@@ -13,16 +14,6 @@ Adds web part that can transform transcripts from Word Online to WEBVTT (subtitl
 - [Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
 
 > Get your own free development tenant by subscribing to [Microsoft 365 developer program](http://aka.ms/o365devprogram)
-
-## Prerequisites
-
-> Any special pre-requisites?
-
-## Version history
-
-Version|Date|Comments
--------|----|--------
-1.0|Oct 27, 2021|Initial release
 
 ## Disclaimer
 
@@ -39,8 +30,6 @@ Version|Date|Comments
   - **npm install**
   - **gulp serve**
 
-> Include any additional steps as needed.
-
 ## References
 
 - [Getting started with SharePoint Framework](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
@@ -48,3 +37,4 @@ Version|Date|Comments
 - [Use Microsoft Graph in your solution](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/get-started/using-microsoft-graph-apis)
 - [Publish SharePoint Framework applications to the Marketplace](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/publish-to-marketplace-overview)
 - [Microsoft 365 Patterns and Practices](https://aka.ms/m365pnp) - Guidance, tooling, samples and open-source controls for your Microsoft 365 development
+
