@@ -14,7 +14,7 @@
     "@microsoft/sp-lodash-subset": "1.13.0",
     "@microsoft/sp-office-ui-fabric-core": "1.13.0",
     "@microsoft/sp-property-pane": "1.13.0",
-    "@microsoft/sp-webpart-base": "1.13.0",
+    "@microsoft/sp-webpart-base": "1.17.1",
     "moment": "^2.29.2",
     "office-ui-fabric-react": "7.174.1",
     "react": "16.13.1",
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@types/react": "16.9.51",
     "@types/react-dom": "16.9.8",
-    "@microsoft/sp-build-web": "1.13.0",
+    "@microsoft/sp-build-web": "1.17.1",
     "@microsoft/sp-tslint-rules": "1.13.0",
     "@microsoft/sp-module-interfaces": "1.13.0",
     "@microsoft/rush-stack-compiler-3.9": "0.4.47",
